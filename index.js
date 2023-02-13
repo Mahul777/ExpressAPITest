@@ -5,31 +5,52 @@ const express = require('express');
 //now we are trying to create a server 
 const app= express();
 
-const PORT = 3000;
-const path = require('path');
-
-const middleware = (req,res,next)=>{
-   console.log("hi this is a middleware");
-   next(); //this next function help to move to next function 
-}
-
-//all the static file is there in public folder can run by method use()
-app.use(express.static(path.join(__dirname,'public')))
-app.use(middleware); //with the help of middleware all four function will run 
-app.get('/',middleware,(req,res) =>
+const PORT = process.env.PORT || 3000;
+//here for new branch we try to create get method only
+const member= [{                      //this array represent database 
+  id: 1,
+  name : "John",
+  email: "John@123gmail.com",
+  status: "active"
+},
 {
-   res.send("<h1>Hello World </h1>")
-})
-app.post('/',middleware,(req,res)=>{
-   res.send("Hello this is a POST Request");
-})
-app.put('/',middleware,(req,res)=>
+  id: 2,
+  name: "Ankur",
+  email:"Ankur@gmail.com",
+  status: "inactive"
+},
 {
-   res.send("Hello This is a PUT Request");
+  id: 3,
+  name: "Ankit",
+  email:"Ankit@gmail.com",
+  status:"active"
+}]
+
+//now we will create get request 
+app.get("/showAllUser",(req,res)=>
+{
+   // 200 -> it means all the things are good
+   //json ->data must be shown in json format
+   //member -> now this array which we mentioned 
+  res.status(200).json(member)
 })
 
-app.delete('/',middleware,(req,res)=>
+//now I want to see data of given id 
+//: ->here it means placeholder
+//id ->variable name  
+app.get("/showUser/:uid",(req,res)=>
 {
-   res.send("Hello This is a Delete Request");
+  //console.log(req);  //it is very big object 
+  //anything comes from parameter the number will become string 
+  //console.log(typeof parseInt( req.params.uid))
+  
+   const id = req.params.uid;
+   //if member id is same given id in Get request then return the user 
+   //The filter function in the line you provided is used to filter an array of member objects based on a certain condition
+    const user = member.filter(member => member.id ===parseInt(id));
+    //user.length!==0  ->it means we have given some value in Get Request
+    user.length!==0 ? res.status(200).json(user) : res.status(200).json({msg:"User Not Found"})
+    
 })
+
 app.listen(PORT,()=>console.log(`Server is running at ${PORT}`));
