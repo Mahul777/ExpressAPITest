@@ -1,13 +1,17 @@
-
+//express ->it is big type of function
 const express = require('express');
 //console.log(express);
 
+//we created new branch so we need to import uuid 
+const uuid = require("uuid");
+
+//const uuid = require('uuid');
 //now we are trying to create a server 
 const app= express();
 
 const PORT = process.env.PORT || 3000;
 //here for new branch we try to create get method only
-const member= [{                      //this array represent database 
+const member= [{                      //member array represent database  
   id: 1,
   name : "John",
   email: "John@123gmail.com",
@@ -26,6 +30,8 @@ const member= [{                      //this array represent database
   status:"active"
 }]
 
+
+app.use(express.json())   //Accept json data 
 //now we will create get request 
 app.get("/showAllUser",(req,res)=>
 {
@@ -53,4 +59,38 @@ app.get("/showUser/:uid",(req,res)=>
     
 })
 
-app.listen(PORT,()=>console.log(`Server is running at ${PORT}`));
+app.post("/addUser/",(req,res)=>{
+  const {name,email} = req.body;
+  const newmember = 
+  {
+    id: uuid.v4(),
+    email,
+    name,
+    status:"inactive"
+  }
+  member.push(newmember);
+  res.status(200).json(member);
+})
+
+//now we create enviroment where we give data to user then it will save in it database
+//for datasave we need to call post()
+app.post('/addUser',(req,res)=>{
+
+ // const name = req.body.name;
+  //const email = req.body.email;
+  //const password = req.body.password;
+
+  //there is another way to write upper three lines 
+  
+  //const {name,email,password} = req.body;
+  //member.push({id:4,name,email})
+  //res.status(200).json(member);
+  //console.log(name,email,password);
+
+  const {name,email,password} = req.body;
+  member.push({id:uuid.v4(),name,email})
+  res.status(200).json(member);
+  console.log(name,email,password);
+})
+
+app.listen(PORT,()=>console.log(`Server is running awwt ${PORT}`));
