@@ -93,4 +93,23 @@ app.post('/addUser',(req,res)=>{
   console.log(name,email,password);
 })
 
+app.delete("/deleteUser/:uid",(req,res)=>
+{
+  const id = parseInt(req.params.uid);
+  //console.log(id);
+
+  //now first check given id is present in database or not 
+  const found = member.some(member => member.id === id )
+  if(found)
+  {
+    //member.filter -> it return new array
+     const result = member.filter(member =>member.id !=id)
+     res.status(200).json(result);
+  }
+  else
+  {
+    res.status(400).json({msg:`No member is found with id of ${id}`})
+  }
+})
+
 app.listen(PORT,()=>console.log(`Server is running awwt ${PORT}`));
